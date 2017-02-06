@@ -3,6 +3,7 @@ import HTTP
 import Auth
 import Turnstile
 import TurnstileWeb
+import Foundation
 
 final class LoginController {
     func addRoutes(to drop: Droplet) {
