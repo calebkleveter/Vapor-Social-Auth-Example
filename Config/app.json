@@ -1,3 +1,6 @@
 {
-	"foo": "foo-bar"
+    "facebookClientID": "$FACEBOOK_CLIENT_ID",
+    "facebookClientSecret": "$FACEBOOK_CLIENT_SECRET",
+    "googleClientID": "$GOOGLE_CLIENT_ID",
+    "googleClientSecret": "$GOOGLE_CLIENT_SECRET"
 }
