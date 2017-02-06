@@ -13,6 +13,8 @@ final class LoginController {
         if let clientID = drop.config["app", "facebookClientID"]?.string,
             let clientSecret = drop.config["app", "facebookClientSecret"]?.string {
             
+            let facebook = Facebook(clientID: clientID, clientSecret: clientSecret)
+            
         } else {
             drop.get("login", "facebook", handler: { (request) -> ResponseRepresentable in
                 return "You need to configure Facebook Login first!"
