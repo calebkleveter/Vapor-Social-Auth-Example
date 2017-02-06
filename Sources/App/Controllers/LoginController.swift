@@ -7,6 +7,15 @@ final class LoginController {
     func addRoutes(to drop: Droplet) {
         drop.post("login", handler: adminLogin)
         drop.post("register", handler: createAdmin)
+        
+        if let clientID = drop.config["app", "facebookClientID"]?.string,
+            let clientSecret = drop.config["app", "facebookClientSecret"]?.string {
+            
+        } else {
+            drop.get("login", "facebook", handler: { (request) -> ResponseRepresentable in
+                return "You need to configure Facebook Login first!"
+            })
+        }
     }
   
     func createAdmin(_ request: Request)throws -> ResponseRepresentable {
