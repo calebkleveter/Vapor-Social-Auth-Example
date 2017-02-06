@@ -3,7 +3,7 @@ import HTTP
 import Auth
 import Turnstile
 import TurnstileWeb
-import Foundation
+import TurnstileCrypto
 
 final class LoginController {
     func addRoutes(to drop: Droplet) {
@@ -14,6 +14,22 @@ final class LoginController {
             let clientSecret = drop.config["app", "facebookClientSecret"]?.string {
             
             let facebook = Facebook(clientID: clientID, clientSecret: clientSecret)
+            
+            drop.get("login", "facebook") { request in
+                let state = URandom().secureToken
+                let response = Response(redirect: facebook.getLoginLink(redirectURL: request.baseURL + "/login/facebook/consumer", state: state).absoluteString)
+                response.cookies["OAuthState"] = state
+                return response
+            }
+            
+            drop.get("login", "facebook", "consumer") { request in
+                guard let state = request.cookies["OAuthState"] else {
+                    return Response(redirect: "/login")
+                }
+                let account = try facebook.authenticate(authorizationCodeCallbackURL: request.uri.description, state: state) as! FacebookAccount
+                try request.auth.login(account)
+                return Response(redirect: "/")
+            }
             
         } else {
             drop.get("login", "facebook", handler: { (request) -> ResponseRepresentable in
