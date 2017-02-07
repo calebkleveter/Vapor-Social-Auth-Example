@@ -36,6 +36,32 @@ final class LoginController {
                 return "You need to configure Facebook Login first!"
             })
         }
+        
+        if let clientID = drop.config["app", "googleClientID"]?.string,
+            let clientSecret = drop.config["app", "googleClientSecret"]?.string {
+            
+            let google = Google(clientID: clientID, clientSecret: clientSecret)
+            
+            drop.get("login", "google") { request in
+                let state = URandom().secureToken
+                let response = Response(redirect: google.getLoginLink(redirectURL: request.baseURL + "/login/google/consumer", state: state).absoluteString)
+                response.cookies["OAuthState"] = state
+                return response
+            }
+            
+            drop.get("login", "google", "consumer") { request in
+                guard let state = request.cookies["OAuthState"] else {
+                    return Response(redirect: "/login")
+                }
+                let account = try google.authenticate(authorizationCodeCallbackURL: request.uri.description, state: state) as! GoogleAccount
+                try request.auth.login(account)
+                return Response(redirect: "/")
+            }
+        } else {
+            drop.get("login", "google") { request in
+                return "You need to configure Google Login first!"
+            }
+        }
     }
   
     func createAdmin(_ request: Request)throws -> ResponseRepresentable {
