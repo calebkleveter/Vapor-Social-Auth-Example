@@ -20,9 +20,11 @@ final class User {
     }
     
     init(node: Node, in context: Context) throws {
-        id = try node.extract("id")
+        id = node["id"]
         username = try node.extract("username")
         password = try node.extract("password")
+        facebookID = try node.extract("facebook_id")
+        googleID = try node.extract("google_id")
     }
     
     init(credentials: FacebookAccount) {
@@ -41,8 +43,10 @@ extension User: Model {
         return try Node(node: [
             "id": id,
             "username": username,
-            "password": password
-            ])
+            "password": password,
+            "facebook_id": facebookID,
+            "google_id": googleID,
+        ])
     }
 }
 
