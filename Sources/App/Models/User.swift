@@ -3,6 +3,7 @@ import VaporPostgreSQL
 import Fluent
 import Auth
 import Turnstile
+import TurnstileWeb
 import BCrypt
 
 final class User {
