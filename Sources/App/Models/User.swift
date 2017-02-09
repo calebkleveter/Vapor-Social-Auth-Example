@@ -24,6 +24,16 @@ final class User {
         username = try node.extract("username")
         password = try node.extract("password")
     }
+    
+    init(credentials: FacebookAccount) {
+        self.username = "fb" + credentials.uniqueID
+        self.facebookID = credentials.uniqueID
+    }
+    
+    init(credentials: GoogleAccount) {
+        self.username = "goog" + credentials.uniqueID
+        self.googleID = credentials.uniqueID
+    }
 }
 
 extension User: Model {
