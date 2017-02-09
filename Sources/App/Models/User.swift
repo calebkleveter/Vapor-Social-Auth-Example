@@ -85,6 +85,19 @@ extension User: Auth.User {
                 throw Abort.custom(status: .networkAuthenticationRequired, message: "Invalid user name or password.")
             }
             
+        case let credentials as FacebookAccount:
+            if let existing = try User.query().filter("facebook_id", credentials.uniqueID).first() {
+                return existing
+            } else {
+                throw Abort.custom(status: .networkAuthenticationRequired, message: "User does not exist")
+            }
+            
+        case let credentials as GoogleAccount:
+            if let existing = try User.query().filter("google_id", credentials.uniqueID).first() {
+                return existing
+            } else {
+                throw Abort.custom(status: .networkAuthenticationRequired, message: "User does not exist")
+            }
             
         default:
             let type = type(of: credentials)
