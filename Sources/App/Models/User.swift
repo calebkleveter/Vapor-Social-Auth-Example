@@ -9,7 +9,7 @@ import BCrypt
 final class User {
     var id: Node?
     var username: String
-    var password: String
+    var password = ""
     var facebookID = ""
     var googleID = ""
     
