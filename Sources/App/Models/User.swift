@@ -100,6 +100,18 @@ extension User: Auth.User {
             } else {
                 return User(username: credentials.username, password: BCrypt.hash(password: credentials.password))
             }
+        case let credentials as FacebookAccount:
+            if let user = try User.query().filter("facebook_id", credentials.uniqueID).first() {
+                return user
+            } else {
+                return User(credentials: credentials)
+            }
+        case let credentials as GoogleAccount:
+            if let user = try User.query().filter("google_id", credentials.uniqueID).first() {
+                return user
+            } else {
+                return User(credentials: credentials)
+            }
         default:
             let type = type(of: credentials)
             throw Abort.custom(status: .forbidden, message: "Unsupported credential type: \(type).")
