@@ -9,6 +9,8 @@ final class User {
     var id: Node?
     var username: String
     var password: String
+    var facebookID = ""
+    var googleID = ""
     
     init(username: String, password: String) {
         self.id = nil
