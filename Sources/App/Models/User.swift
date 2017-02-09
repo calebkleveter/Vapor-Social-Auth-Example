@@ -91,15 +91,18 @@ extension User: Auth.User {
             throw Abort.custom(status: .forbidden, message: "Unsupported credential type: \(type).")
         }
     }
+    
     static func register(credentials: Credentials) throws -> Auth.User {
-        let usernamePassword = credentials as? UsernamePassword
-        
-        guard let creds = usernamePassword else {
+        switch credentials {
+        case let credentials as UsernamePassword:
+            if let user = try User.query().filter("username", credentials.username).first() {
+                return user
+            } else {
+                return User(username: credentials.username, password: BCrypt.hash(password: credentials.password))
+            }
+        default:
             let type = type(of: credentials)
             throw Abort.custom(status: .forbidden, message: "Unsupported credential type: \(type).")
         }
-        
-        let user = User(username: creds.username, password: BCrypt.hash(password: creds.password))
-        return user
     }
 }
